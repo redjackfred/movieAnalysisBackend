@@ -34,11 +34,12 @@ public class UserController {
     @GetMapping("/users")
     public List<User> getAllUsers() {
         // Just for external api call testing
+        // TODO: This is just a test, so it must move to another file
         WebClient client = WebClient.create();
         try {
             String response = client.get()
                     .uri(new URI("https://api.themoviedb.org/3/movie/672?language=en-US"))
-                    .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMjhiNGYxOWI3YjhmMTk0NTljMzliNWUxNDljZmUzOSIsIm5iZiI6MTcyNTg1ODIxNC40MzA4ODcsInN1YiI6IjY2ZGE5MDkzOWNlYzFkOGU2MGJmZmY2NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.XZRNxTpcGyJnbpprFXBv6MlO9nsfodT9eHYtW0ISWGY")
+                    .header("Authorization", "Bearer APIKEY")
                     .accept(MediaType.APPLICATION_JSON)
                     .retrieve()
                     .bodyToMono(String.class)
