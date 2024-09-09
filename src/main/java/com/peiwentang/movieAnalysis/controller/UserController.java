@@ -1,5 +1,7 @@
 package com.peiwentang.movieAnalysis.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +12,7 @@ import com.peiwentang.movieAnalysis.repository.UserRepository;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +22,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
+import com.google.gson.*;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -28,6 +33,22 @@ public class UserController {
 
     @GetMapping("/users")
     public List<User> getAllUsers() {
+        // Just for external api call testing
+        WebClient client = WebClient.create();
+        try {
+            String response = client.get()
+                    .uri(new URI("https://api.themoviedb.org/3/movie/672?language=en-US"))
+                    .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMjhiNGYxOWI3YjhmMTk0NTljMzliNWUxNDljZmUzOSIsIm5iZiI6MTcyNTg1ODIxNC40MzA4ODcsInN1YiI6IjY2ZGE5MDkzOWNlYzFkOGU2MGJmZmY2NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.XZRNxTpcGyJnbpprFXBv6MlO9nsfodT9eHYtW0ISWGY")
+                    .accept(MediaType.APPLICATION_JSON)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+            JsonObject obj = new JsonParser().parse(response).getAsJsonObject();
+            System.out.println(obj.get("adult").getAsBoolean());
+        }catch (URISyntaxException e){
+            System.out.println("error");
+        }
+
         return userRepository.findAll();
     }
 
