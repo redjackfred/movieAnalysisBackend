@@ -12,6 +12,7 @@ import com.peiwentang.movieAnalysis.repository.UserRepository;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,6 +31,8 @@ import com.google.gson.*;
 public class UserController {
     @Autowired
     private UserRepository userRepository;
+    @Value("${apiToken}")
+    private String token;
 
     @GetMapping("/users")
     public List<User> getAllUsers() {
@@ -39,7 +42,7 @@ public class UserController {
         try {
             String response = client.get()
                     .uri(new URI("https://api.themoviedb.org/3/movie/672?language=en-US"))
-                    .header("Authorization", "Bearer APIKEY")
+                    .header("Authorization", "Bearer " + token)
                     .accept(MediaType.APPLICATION_JSON)
                     .retrieve()
                     .bodyToMono(String.class)
