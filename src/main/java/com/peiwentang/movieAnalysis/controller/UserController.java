@@ -23,36 +23,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClient;
-import com.google.gson.*;
+
 
 @RestController
 @RequestMapping("/api/v1")
 public class UserController {
     @Autowired
     private UserRepository userRepository;
-    @Value("${apiToken}")
-    private String token;
 
     @GetMapping("/users")
     public List<User> getAllUsers() {
-        // Just for external api call testing
-        // TODO: This is just a test, so it must move to another file
-        WebClient client = WebClient.create();
-        try {
-            String response = client.get()
-                    .uri(new URI("https://api.themoviedb.org/3/movie/672?language=en-US"))
-                    .header("Authorization", "Bearer " + token)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-            JsonObject obj = new JsonParser().parse(response).getAsJsonObject();
-            System.out.println(obj.get("adult").getAsBoolean());
-        }catch (URISyntaxException e){
-            System.out.println("error");
-        }
-
         return userRepository.findAll();
     }
 
