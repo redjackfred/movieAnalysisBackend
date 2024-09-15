@@ -2,6 +2,8 @@ package com.peiwentang.movieAnalysis.controller;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import dev.langchain4j.model.openai.OpenAiChatModel;
+import dev.langchain4j.model.openai.OpenAiChatModelName;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,25 +17,17 @@ import java.net.URISyntaxException;
 // TODO: This is just a template for later development
 @RestController
 public class RatingController {
-    @Value("${TMDB_API_TOKEN}")
-    private String token;
+    private final String apiKey = System.getenv("OPENAI_API_KEY");
 
     @RequestMapping("/ratings")
     public String hello() {
-        WebClient client = WebClient.create();
-        try {
-            String response = client.get()
-                    .uri(new URI("https://api.themoviedb.org/3/movie/672?language=en-US"))
-                    .header("Authorization", "Bearer " + token)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-            JsonObject obj = new JsonParser().parse(response).getAsJsonObject();
-            System.out.println(obj.get("adult").getAsBoolean());
-        } catch (URISyntaxException e) {
-            System.out.println("error");
-        }
+        OpenAiChatModel model = OpenAiChatModel.builder()
+                .apiKey(apiKey)
+                .modelName(OpenAiChatModelName.GPT_4_O_MINI)
+                .build();
+        String answer = model.generate("Say 'Hello World'");
+        System.out.println(answer); // Hello World
+
         return "Hello World";
     }
 

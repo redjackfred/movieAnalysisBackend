@@ -16,8 +16,8 @@ import java.util.Map;
 
 @RestController
 public class MovieController {
-    @Value("${TMDB_API_TOKEN}")
-    private String token;
+    // API_TOKEN for TMDb
+    private final String token = System.getenv("TMDB_API_TOKEN");
 
     @RequestMapping(value = "/movies", method = RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)
     public String getMovieDetailsByMovieID(@RequestParam Map<String, String> queryParameters){
