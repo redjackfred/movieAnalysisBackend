@@ -20,13 +20,14 @@ public class MovieController {
     private String token;
 
     @RequestMapping(value = "/movies", method = RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getMovie(@RequestParam Map<String, String> queryParameters){
+    public String getMovieDetailsByMovieID(@RequestParam Map<String, String> queryParameters){
         WebClient client = WebClient.create();
         String response = null;
+        String uri = "https://api.themoviedb.org/3/movie/" + queryParameters.get("movieid") + "?language=en-US";
 
         try {
             response = client.get()
-                    .uri(new URI("https://api.themoviedb.org/3/movie/" + queryParameters.get("movieid") + "?language=en-US"))
+                    .uri(new URI(uri))
                     .header("Authorization", "Bearer " + token)
                     .accept(MediaType.APPLICATION_JSON)
                     .retrieve()
@@ -41,7 +42,7 @@ public class MovieController {
     }
 
     @RequestMapping(value = "/movies/searchMovie", method = RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)
-    public String serchMovieID(@RequestParam Map<String, String> queryParameters) throws UnsupportedEncodingException {
+    public String searchMoviesByTitle(@RequestParam Map<String, String> queryParameters) throws UnsupportedEncodingException {
         WebClient client = WebClient.create();
         String response = null;
         String decodedQuery = URLDecoder.decode(queryParameters.get("title"), "UTF-8");
@@ -62,4 +63,24 @@ public class MovieController {
         return response;
     }
 
+    @RequestMapping(value = "/movies/searchCredits", method = RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)
+    public String searchCreditsByMovieID(@RequestParam Map<String, String> queryParameters) throws UnsupportedEncodingException {
+        WebClient client = WebClient.create();
+        String response = null;
+        String decodedQuery = URLDecoder.decode(queryParameters.get("movieid"), "UTF-8");
+        String uri = "https://api.themoviedb.org/3/movie/" + decodedQuery + "/credits?language=en-US";
+        try {
+            response = client.get()
+                    .uri(new URI(uri))
+                    .header("Authorization", "Bearer " + token)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+            JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
+        } catch (URISyntaxException e) {
+            System.out.println("error");
+        }
+        return response;
+    }
 }
