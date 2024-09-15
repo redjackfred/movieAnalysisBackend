@@ -1,19 +1,13 @@
-package com.peiwentang.movieAnalysis.controller;
+package com.peiwentang.movieAnalysis.user;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.peiwentang.movieAnalysis.exception.ResourceNotFoundException;
-import com.peiwentang.movieAnalysis.model.User;
-import com.peiwentang.movieAnalysis.repository.UserRepository;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

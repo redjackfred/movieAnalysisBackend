@@ -1,4 +1,4 @@
-package com.peiwentang.movieAnalysis.model;
+package com.peiwentang.movieAnalysis.user;
 
 import jakarta.persistence.*;
 

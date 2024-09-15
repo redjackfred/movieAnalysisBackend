@@ -1,6 +1,5 @@
-package com.peiwentang.movieAnalysis.repository;
+package com.peiwentang.movieAnalysis.user;
 
-import com.peiwentang.movieAnalysis.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
