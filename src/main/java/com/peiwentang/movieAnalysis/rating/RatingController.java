@@ -1,5 +1,6 @@
 package com.peiwentang.movieAnalysis.rating;
 
+import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.service.AiServices;
 import org.springframework.http.MediaType;
@@ -22,7 +23,10 @@ public class RatingController {
 
     @RequestMapping(value = "/rating", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public String hello(@RequestParam Map<String, String> queryParameters) {
-        RatingAssistant ratingAssistant = AiServices.create(RatingAssistant.class, chatLanguageModel);
+        RatingAssistant ratingAssistant = AiServices.builder(RatingAssistant.class)
+                .chatLanguageModel(chatLanguageModel)
+                .chatMemoryProvider(memoryId -> MessageWindowChatMemory.withMaxMessages(1))
+                .build();
         String answer = ratingAssistant
                 .chat("give me the JSON for IMDb ID: " +
                         queryParameters.get("imdbid") +", Title: \" " + queryParameters.get("title") +  "\"");
