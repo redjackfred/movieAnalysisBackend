@@ -25,11 +25,15 @@ public class RatingController {
     public String hello(@RequestParam Map<String, String> queryParameters) {
         RatingAssistant ratingAssistant = AiServices.builder(RatingAssistant.class)
                 .chatLanguageModel(chatLanguageModel)
-                .chatMemoryProvider(memoryId -> MessageWindowChatMemory.withMaxMessages(1))
+                .chatMemoryProvider(memoryId -> MessageWindowChatMemory.withMaxMessages(2))
                 .build();
-        String answer = ratingAssistant
-                .chat("give me the JSON for IMDb ID: " +
-                        queryParameters.get("imdbid") +", Title: \" " + queryParameters.get("title") +  "\"");
+
+        String userInput = "User: I would like to analyze a movie.";
+        System.out.println(userInput);
+        String answer = ratingAssistant.chat(userInput);
+        System.out.println(answer);
+        answer = ratingAssistant.chat("Title: [" + queryParameters.get("title") + "], IMDB ID: [" + queryParameters.get("imdbid") + "]");
+        System.out.println(answer);
         return answer;
     }
 
