@@ -19,7 +19,6 @@ import java.net.URISyntaxException;
 import java.util.Map;
 
 
-// TODO: This is just a template for later development
 @RestController
 public class RatingController {
     private final String omdbApiKey = System.getenv("OMDB_API_KEY");
