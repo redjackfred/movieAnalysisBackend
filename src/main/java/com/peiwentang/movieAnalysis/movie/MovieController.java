@@ -16,6 +16,7 @@ import java.util.Map;
 public class MovieController {
     // API_TOKEN for TMDb
     private final String token = System.getenv("TMDB_API_TOKEN");
+    private final String omdbApiKey = System.getenv("OMDB_API_KEY");
 
     @RequestMapping(value = "/movies", method = RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)
     public String getMovieDetailsByMovieID(@RequestParam Map<String, String> queryParameters){
@@ -103,10 +104,31 @@ public class MovieController {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
-            JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
         } catch (URISyntaxException e) {
             System.out.println("error");
         }
         return response;
     }
+
+    @RequestMapping(value = "/getPlot", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getPlot(@RequestParam Map<String, String> queryParameters) {
+        WebClient client = WebClient.create();
+        String response = null;
+        String imdbId = queryParameters.get("imdbid");
+        String uri = "https://www.omdbapi.com/?i=" + imdbId + "&apikey=" + omdbApiKey + "&plot=full";
+        try {
+            response = client.get()
+                    .uri(new URI(uri))
+                    .accept(MediaType.APPLICATION_JSON)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (URISyntaxException e) {
+            System.out.println("error");
+        }
+        JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
+
+        return jsonObject.get("Plot").getAsString();
+    }
+
 }

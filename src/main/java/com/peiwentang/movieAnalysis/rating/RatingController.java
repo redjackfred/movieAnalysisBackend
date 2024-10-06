@@ -3,7 +3,6 @@ package com.peiwentang.movieAnalysis.rating;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.peiwentang.movieAnalysis.movie.MovieManager;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.service.AiServices;
@@ -94,9 +93,25 @@ public class RatingController {
         System.out.println(userInput);
         String answer = ratingAssistant.chat(userInput);
         System.out.println(answer);
+
+        // Prepare user message
         String title = queryParameters.get("title");
-        String imdbId = queryParameters.get("imdbId");
-        answer = ratingAssistant.chat("Title: [" + title + "], IMDB ID: [" + imdbId + "]");
+        String imdbId = queryParameters.get("imdbid");
+        String userMessage = "Title: [" + title + "], IMDB ID: [" + imdbId + "]";
+        if(queryParameters.containsKey("imdbrating")){
+            userMessage += ", Rating: [" + queryParameters.get("imdbrating") + "]";
+        }
+        if(queryParameters.containsKey("rottentomatoesrating")){
+            userMessage += ", Rotten Tomatoes Rating: [" + queryParameters.get("rottentomatoesrating") + "]";
+        }
+        if(queryParameters.containsKey("metacriticrating")){
+            userMessage += ", Metacritic Rating: [" + queryParameters.get("metacriticrating") + "]";
+        }
+        if(queryParameters.containsKey("plot")){
+            userMessage += ", Plot: [" + queryParameters.get("plot") + "]";
+        }
+
+        answer = ratingAssistant.chat(userMessage);
         System.out.println(answer);
 
         return answer;
