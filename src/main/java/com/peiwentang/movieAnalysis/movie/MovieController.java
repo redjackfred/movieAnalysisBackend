@@ -39,6 +39,28 @@ public class MovieController {
         return response;
     }
 
+    @RequestMapping(value = "/getIMDbId", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getIMDbId(@RequestParam Map<String, String> queryParameters) throws UnsupportedEncodingException {
+        WebClient client = WebClient.create();
+        String response = null;
+        String movieId = queryParameters.get("movieid");
+        String uri = "https://api.themoviedb.org/3/movie/" + movieId + "/external_ids";
+        try {
+            response = client.get()
+                    .uri(new URI(uri))
+                    .header("Authorization", "Bearer " + token)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (URISyntaxException e) {
+            System.out.println("error");
+        }
+
+        return response;
+    }
+
+
     @RequestMapping(value = "/movies/searchMovie", method = RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)
     public String searchMoviesByTitle(@RequestParam Map<String, String> queryParameters) throws UnsupportedEncodingException {
         WebClient client = WebClient.create();
@@ -53,11 +75,17 @@ public class MovieController {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
-            JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
-            System.out.println(jsonObject.toString());
+            // Store movies from response
+            MovieManager movieManager = new MovieManager();
+            movieManager.parseJson(response);
+
+
         } catch (URISyntaxException e) {
             System.out.println("error");
         }
+
+
+
         return response;
     }
 
