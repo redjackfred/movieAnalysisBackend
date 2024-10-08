@@ -1,5 +1,6 @@
 package com.peiwentang.movieAnalysis.movie;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.http.MediaType;
@@ -12,6 +13,7 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.Map;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class MovieController {
     // API_TOKEN for TMDb
@@ -62,12 +64,15 @@ public class MovieController {
     }
 
 
+
     @RequestMapping(value = "/movies/searchMovie", method = RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)
     public String searchMoviesByTitle(@RequestParam Map<String, String> queryParameters) throws UnsupportedEncodingException {
         WebClient client = WebClient.create();
         String response = null;
         String decodedQuery = URLDecoder.decode(queryParameters.get("title"), "UTF-8");
         String uri = "https://api.themoviedb.org/3/search/movie?query="  + decodedQuery + "&include_adult=false&language=en-US&page=1";
+        System.out.println(uri);
+        MovieManager movieManager = new MovieManager();
         try {
             response = client.get()
                     .uri(new URI(uri.replace(" ", "%20")))
@@ -76,18 +81,16 @@ public class MovieController {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
-            // Store movies from response
-            MovieManager movieManager = new MovieManager();
+
             movieManager.parseJson(response);
-
-
         } catch (URISyntaxException e) {
             System.out.println("error");
         }
 
-
-
-        return response;
+//        return movieManager.serialize();
+        System.out.println(movieManager.serialize());
+        System.out.println(response);
+        return movieManager.serialize();
     }
 
     @RequestMapping(value = "/movies/searchCredits", method = RequestMethod.GET , produces = MediaType.APPLICATION_JSON_VALUE)

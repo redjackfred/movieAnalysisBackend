@@ -9,7 +9,7 @@ import java.util.List;
 public class Movie {
     private int id;
     private String title;
-    private List<Integer> genreIds;
+    private List<String> genres;
     private boolean adult;
     private String language;
     private String backdropURL;
@@ -18,10 +18,10 @@ public class Movie {
     private String posterURL;
     private String releaseDate;
 
-    public Movie(int id, String title, boolean adult, String language, String backdropURL, String overview, int popularity, String posterURL, String releaseDate, List<Integer> genreIds) {
+    public Movie(int id, String title, boolean adult, String language, String backdropURL, String overview, int popularity, String posterURL, String releaseDate, List<String> genres) {
         this.id = id;
         this.title = title;
-        this.genreIds = genreIds;
+        this.genres = genres;
         this.adult = adult;
         this.language = language;
         this.backdropURL = backdropURL;

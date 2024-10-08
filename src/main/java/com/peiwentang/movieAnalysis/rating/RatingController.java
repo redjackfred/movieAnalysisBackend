@@ -7,18 +7,19 @@ import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.service.AiServices;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
-
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class RatingController {
     private final String omdbApiKey = System.getenv("OMDB_API_KEY");
     private ChatLanguageModel chatLanguageModel;
@@ -83,7 +84,7 @@ public class RatingController {
 
 
     @RequestMapping(value = "/generateReport", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String generateReport(@RequestParam Map<String, String> queryParameters) {
+    public String generateReport(@RequestParam Map<String, String> queryParameters) throws IOException {
         RatingAssistant ratingAssistant = AiServices.builder(RatingAssistant.class)
                 .chatLanguageModel(chatLanguageModel)
                 .chatMemoryProvider(memoryId -> MessageWindowChatMemory.withMaxMessages(2))
@@ -98,14 +99,14 @@ public class RatingController {
         String title = queryParameters.get("title");
         String imdbId = queryParameters.get("imdbid");
         String userMessage = "Title: [" + title + "], IMDB ID: [" + imdbId + "]";
-        if(queryParameters.containsKey("imdbrating")){
-            userMessage += ", Rating: [" + queryParameters.get("imdbrating") + "]";
+        if(queryParameters.containsKey("IMDbRating")){
+            userMessage += ", Rating: [" + queryParameters.get("IMDbRating") + "]";
         }
-        if(queryParameters.containsKey("rottentomatoesrating")){
-            userMessage += ", Rotten Tomatoes Rating: [" + queryParameters.get("rottentomatoesrating") + "]";
+        if(queryParameters.containsKey("RottenTomatoesRating")){
+            userMessage += ", Rotten Tomatoes Rating: [" + queryParameters.get("RottenTomatoesRating") + "]";
         }
-        if(queryParameters.containsKey("metacriticrating")){
-            userMessage += ", Metacritic Rating: [" + queryParameters.get("metacriticrating") + "]";
+        if(queryParameters.containsKey("MetacriticRating")){
+            userMessage += ", Metacritic Rating: [" + queryParameters.get("MetacriticRating") + "]";
         }
         if(queryParameters.containsKey("plot")){
             userMessage += ", Plot: [" + queryParameters.get("plot") + "]";
@@ -113,6 +114,16 @@ public class RatingController {
 
         answer = ratingAssistant.chat(userMessage);
         System.out.println(answer);
+        BufferedWriter bw = null;
+        try {
+            bw = new BufferedWriter(new FileWriter(new File("MyJson.txt")));
+            bw.write(answer);
+        } finally {
+            try {
+                bw.close();
+            } catch (Exception e) {
+            }
+        }
 
         return answer;
     }
