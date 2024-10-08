@@ -8,5 +8,8 @@ import dev.langchain4j.service.spring.AiService;
 public interface RatingAssistant {
 
     @SystemMessage(fromResource = "systemPrompt.txt")
-    String chat(String userMessage);
+    String generateReport(String userMessage);
+
+    @SystemMessage(fromResource = "systemPromptForCharacterRelation.txt")
+    String generateCharacterRelation(String userMessage);
 }

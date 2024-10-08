@@ -92,7 +92,7 @@ public class RatingController {
 
         String userInput = "User: I would like to analyze a movie.";
         System.out.println(userInput);
-        String answer = ratingAssistant.chat(userInput);
+        String answer = ratingAssistant.generateReport(userInput);
         System.out.println(answer);
 
         // Prepare user message
@@ -112,7 +112,7 @@ public class RatingController {
             userMessage += ", Plot: [" + queryParameters.get("plot") + "]";
         }
 
-        answer = ratingAssistant.chat(userMessage);
+        answer = ratingAssistant.generateReport(userMessage);
         System.out.println(answer);
         BufferedWriter bw = null;
         try {
