@@ -15,4 +15,7 @@ public interface RatingAssistant {
 
     @SystemMessage(fromResource = "systemPromptForLearningTakeaways.txt")
     String generateLearningTakeaways(String userMessage);
+
+    @SystemMessage(fromResource = "systemPromptForStoryTimeline.txt")
+    String generateStoryTimeline(String userMessage);
 }
