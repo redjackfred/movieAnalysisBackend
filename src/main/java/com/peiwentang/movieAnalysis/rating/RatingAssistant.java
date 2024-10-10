@@ -12,4 +12,7 @@ public interface RatingAssistant {
 
     @SystemMessage(fromResource = "systemPromptForCharacterRelation.txt")
     String generateCharacterRelation(String userMessage);
+
+    @SystemMessage(fromResource = "systemPromptForLearningTakeaways.txt")
+    String generateLearningTakeaways(String userMessage);
 }

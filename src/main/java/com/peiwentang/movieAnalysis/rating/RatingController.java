@@ -114,16 +114,6 @@ public class RatingController {
 
         answer = ratingAssistant.generateReport(userMessage);
         System.out.println(answer);
-        BufferedWriter bw = null;
-        try {
-            bw = new BufferedWriter(new FileWriter(new File("MyJson.txt")));
-            bw.write(answer);
-        } finally {
-            try {
-                bw.close();
-            } catch (Exception e) {
-            }
-        }
 
         return answer;
     }
