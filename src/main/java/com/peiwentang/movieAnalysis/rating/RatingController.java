@@ -34,15 +34,18 @@ public class RatingController {
         String response = null;
         String imdbId = queryParameters.get("imdbid");
         String uri = "https://www.omdbapi.com/?i=" + imdbId + "&apikey=" + omdbApiKey;
-        try {
-            response = client.get()
-                    .uri(new URI(uri))
-                    .accept(MediaType.APPLICATION_JSON)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-        } catch (URISyntaxException e) {
-            System.out.println("error");
+
+        while(response == null || JsonParser.parseString(response).getAsJsonObject().get("Ratings").getAsJsonArray().isEmpty()) {
+            try {
+                response = client.get()
+                        .uri(new URI(uri))
+                        .accept(MediaType.APPLICATION_JSON)
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .block();
+            } catch (URISyntaxException e) {
+                System.out.println("error");
+            }
         }
 
         // Reformat json
@@ -79,6 +82,7 @@ public class RatingController {
         }
         outputJsonObject.add("Results", resultJsonArray);
 
+        System.out.println("getPublicRatings: " + outputJsonObject);
         return outputJsonObject.toString();
     }
 

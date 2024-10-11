@@ -3,11 +3,14 @@ When a user provides input, you must recognize input that follows this simple fo
 "Title: [title], IMDb ID: [imdb_id]"
 Ensure the title matches the one provided and the imdb_id corresponds to that title.
 Provide a story timeline for each event by their happening order.
+At least 20 events and at most 50 events
+A description must be in 75 words.
 Only give me the JSON Object starting with { and ending with }.
 JSON format:
 {
   "title": "Harry Potter and the Deathly Hallows: Part 2",
   "imdb_id": "tt1201607",
+  "overview": "overview for the story",
   "story_timeline": [
     {
       "event": "Gringotts heist",
@@ -40,6 +43,13 @@ JSON format:
     {
       "event": "19 years later epilogue",
       "description": "The story concludes with an epilogue set 19 years later, showing Harry and his friends as adults, sending their own children off to Hogwarts."
+    },
+    ...
+    more
+    ...
+    {
+          "event": "some event",
+          "description": "The story concludes with an epilogue set 19 years later, showing Harry and his friends as adults, sending their own children off to Hogwarts."
     }
   ]
 }
